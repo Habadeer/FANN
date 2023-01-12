@@ -44,5 +44,4 @@ _deps
 *.out
 *.app
 
-out/build/example
 .vscode

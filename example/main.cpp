@@ -1,73 +1,85 @@
-#include<vector>
-#include<map>
-#include<cstdint>
-#include<iostream>
-#include<cmath>
-#include<ctime>
-#include<fstream>
-#include "../FANN/FANN.h"
+#include <vector>
+#include <map>
+#include <cstdint>
+#include <iostream>
+#include <cmath>
+#include <ctime>
+#include <fstream>
 
 #define WITHOUT_NUMPY
 #include "matplotlibcpp.h"
+#include "../FANN/FANN.h"
 
-#define _USE_MATH_DEFINES
-
-namespace plt = matplotlibcpp;
-int main() 
+int main()
 {
+    // Add seed for random functions
     srand(time(NULL));
+
+    // Define shape of neural network
     std::vector<uint64_t> shape = {1, 8, 8, 8, 1};
-    FunctionParams parm;
-    parm.a = 1.4;
 
-    ArtificialNeuralNetwork a(shape, parm);
+    // Define type of activation function
+    AI::EActivationFunction funcType = AI::EActivationFunction::BISIGMOID;
 
-    // plot
-    std::vector<LearningData> data;
-    std::vector<double> tempTime;
-    std::vector<double> tempSin;
+    // Define parameters for activation function (a = 1.4, b = 0, c = 0)
+    AI::FunctionParams parameters(1.4);
 
+    // Define initial learning speed (steps on function derivative)
+    double lspeed = 0.001;
+
+    // Create neural network
+    AI::ArtificialNeuralNetwork neuralNetwork(shape, parameters, funcType, lspeed);
+
+    // Data vector for learning purpose
+    std::vector<AI::LearningData> data;
+
+    // Vectors for storing learning data
     std::vector<double> time;
     std::vector<double> sin;
 
-    for(int i = 0; i < 20; i++)
+    // Fill data vector with random sine values
+
+
+    for (int i = 0; i < 20; i++)
     {
-        double in = double((double)rand() / RAND_MAX) * 2 * M_PI;
-        double out = std::sin(in);
-        tempTime.push_back(in);
-        time.push_back(in);
-        tempSin.push_back(out);
-        sin.push_back(out);
-        LearningData d;
-        d.input = tempTime;
-        d.desiredOutput = tempSin;
+        // Vectors of inputs and outputs needed to populate learning data
+        std::vector<double> inputVector;  // input
+        std::vector<double> outputVector; // desired output
+
+        // Single input with desired output
+        AI::LearningData d;
+
+        time.push_back(static_cast<double>(rand()) / RAND_MAX * 2 * M_PI);
+        sin.push_back(std::sin(time.back()));
+
+        inputVector.push_back(time.back());
+        outputVector.push_back(sin.back());
+
+        d.input = inputVector;
+        d.desiredOutput = outputVector;
+
         data.push_back(d);
-
-        tempTime.clear();
-        tempSin.clear();
     }
 
-    std::cout << "nauka" << std::endl;
-    a.calibrateNetworkWeights(data, 10000, 0.05);
-    std::cout << "po nauce" << std::endl;
-    
-    std::vector<double> output;
-    std::vector<double> time2;
-    for(int i = 0; i < 100; i++)
+
+    // Calibrate weights (network training), provide learning data, max iteration number and max error
+    neuralNetwork.calibrateNetworkWeights(data, 10000, 0.05);
+
+    std::vector<double> outputForPlotting;
+    std::vector<double> inputForPlotting;
+
+    // Get outputs from trained network
+    for (int i = 0; i < 100; i++)
     {
-        std::vector<double> in;
-        in.push_back((double)i/100 * 2 * M_PI );
-        time2.push_back(in.at(0));
-        output.push_back(a.networkImpulse(in).at(0));
-
-        //std::cout << "in = " << time.at(i) << "out = " << output.at(i) << std::endl;
+        std::vector<double> input;
+        inputForPlotting.push_back(static_cast<double>(i) / 100 * 2 * M_PI);
+        input.push_back(inputForPlotting.back());
+        outputForPlotting.push_back(neuralNetwork.networkImpulse(input).at(0));
     }
 
-    plt::plot(time, sin, "*");
-    plt::plot(time2, output);
-    plt::plot(time, sin, "*");
-    plt::show();
-    
+    matplotlibcpp::plot(inputForPlotting, outputForPlotting);
+    matplotlibcpp::plot(time, sin, "*");
+    matplotlibcpp::show();
+
     return 0;
 }
-

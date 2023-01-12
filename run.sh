@@ -1,3 +1,3 @@
 #!/bin/sh
 
-out/build/example
+build/example

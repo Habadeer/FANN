@@ -1,18 +1,16 @@
-cmake_minimum_required(VERSION 3.22.1)
+cmake_minimum_required(VERSION 3.15.0)
 
 project(example)
 
+set(CMAKE_CXX_STANDARD 17)
 
-add_executable(${PROJECT_NAME} 
+add_executable(${PROJECT_NAME}
                 example/main.cpp
 )
 
-add_subdirectory(ANN)
+add_subdirectory(FANN)
 
-target_include_directories(${PROJECT_NAME} PUBLIC fann)
-target_link_directories(${PROJECT_NAME} PRIVATE fann)
-target_link_libraries(${PROJECT_NAME} ann python3.10)
+find_package(Python3 3.10 REQUIRED COMPONENTS Interpreter Development)
 
-find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
-find_package(PythonLibs 3.10 REQUIRED)
-include_directories(/usr/include/python3.10)
+target_include_directories(${PROJECT_NAME} PUBLIC fann ${Python3_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} fann ${Python3_LIBRARIES})
