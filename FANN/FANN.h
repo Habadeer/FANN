@@ -39,11 +39,11 @@ namespace AI
     {
     private:
         class NeuronLayer;
-        std::vector<uint64_t> v_NetworkShape;
-        std::vector<NeuronLayer> v_NeuronLayers;
-        double learningSpeed;
-        EActivationFunction ActivationFunctionSelection;
-        FunctionParams par;
+        std::vector<uint64_t> m_NetworkShape;
+        std::vector<NeuronLayer> m_NeuronLayers;
+        double m_learningSpeed;
+        EActivationFunction m_ActivationFunctionSelection;
+        FunctionParams m_FuncParameters;
 
         double calibrateWeightsSeries(std::vector<double> inputs, std::vector<double> desiredOutputs);
 
@@ -51,14 +51,14 @@ namespace AI
         {
         private:
             class Neuron;
-            ArtificialNeuralNetwork &network;
-            std::vector<Neuron> v_Neurons;
+            ArtificialNeuralNetwork& m_network;
+            std::vector<Neuron> m_Neurons;
 
             class Neuron
             {
             private:
-                ArtificialNeuralNetwork &network;
-                std::vector<double> v_Weights;
+                ArtificialNeuralNetwork& m_network;
+                std::vector<double> m_Weights;
                 double m_NeuronError;
 
             public:

@@ -7,8 +7,9 @@
 #include <fstream>
 
 #define WITHOUT_NUMPY
+
+#include "FANN.h"
 #include "matplotlibcpp.h"
-#include "../FANN/FANN.h"
 
 int main()
 {
@@ -39,7 +40,6 @@ int main()
 
     // Fill data vector with random sine values
 
-
     for (int i = 0; i < 20; i++)
     {
         // Vectors of inputs and outputs needed to populate learning data
@@ -60,7 +60,6 @@ int main()
 
         data.push_back(d);
     }
-
 
     // Calibrate weights (network training), provide learning data, max iteration number and max error
     neuralNetwork.calibrateNetworkWeights(data, 10000, 0.05);
