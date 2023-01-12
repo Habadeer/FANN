@@ -45,3 +45,4 @@ _deps
 *.app
 
 .vscode
+build/*
